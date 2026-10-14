@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --c-bench: 250 250 249; --c-ink: 26 31 43;
+    --c-brand: 45 90 155; --c-brand-dark: 35 72 128; --c-brand-deep: 27 58 104; --c-brand-soft: 238 242 248;
+    --c-accent: 248 168 16; --c-accent-dark: 225 150 0;
+    --c-line: 230 232 236; --c-mist: 243 244 246; --c-slate: 92 100 114;
+  }
+  /* The job roles keep the Tay blue; the rest of the site stays neutral */
+  .theme-roles { --c-brand: 8 72 160; --c-brand-dark: 6 58 130; --c-brand-deep: 5 43 99; --c-brand-soft: 227 236 248; --c-accent-dark: 219 144 0; }
+  html { scroll-behavior: smooth; }
+  body { @apply bg-bench text-ink font-body antialiased; }
+  h1, h2, h3, h4 { @apply font-display font-semibold tracking-tight; }
+  :focus-visible { outline: 3px solid #F8A810; outline-offset: 2px; }
+}
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-colors disabled:opacity-50; }
+  .btn-quote { @apply btn bg-accent text-ink hover:bg-accent-dark; }
+  .btn-main { @apply btn bg-ink text-white hover:bg-ink/85; }
+  .btn-line { @apply btn border border-ink/25 text-ink hover:bg-mist; }
+  .btn-wa { @apply btn bg-[#1a8f3c] text-white hover:bg-[#15742f]; }
+  .field { @apply w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm focus:border-brand; }
+  .label { @apply mb-1 block text-sm font-medium; }
+  .container-x { @apply mx-auto w-full max-w-6xl px-5; }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .slip-in { animation: slip-in .7s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes slip-in { from { opacity: 0; transform: translateY(18px) rotate(1.5deg); } to { opacity: 1; transform: none; } }
+  .dialog-in[open] { animation: dialog-in .22s ease-out both; }
+  @keyframes dialog-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+}
+
+/* Official Distributor Partners logo strip (PartnersMarquee.tsx) */
+.marquee-viewport {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .marquee-track { animation: marquee 35s linear infinite; } /* lower seconds = faster */
+  /* Pause on mouse hover, or while a keyboard user tabs onto a logo (not after a mouse click) */
+  .marquee-viewport:hover .marquee-track,
+  .marquee-viewport:has(a:focus-visible) .marquee-track { animation-play-state: paused; }
+  /* Moves exactly one set of logos (half the track + half a gap), so the loop has no jump */
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 15px)); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { flex-wrap: wrap; justify-content: center; width: auto; }
+  .marquee-track > li[aria-hidden="true"] { display: none; }
+}
