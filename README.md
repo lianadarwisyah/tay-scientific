@@ -92,6 +92,9 @@ Then staff can add, edit, hide and delete products and upload photos in **Admin 
 ## 3a-12. Customer address on quotations
 Run `supabase/migration_quotation_address.sql` once. The quote cart then saves the customer's address; it shows in Admin → Quotations, in the quotation email and on the customer's printable request.
 
+## 3a-13. Service request form
+The Services page has a "Request a service" form (type of service, equipment info, customer contact). It is emailed to `service@tayscientific.com.my` using the same SMTP settings as the careers form. To send test requests elsewhere, set `SERVICE_EMAIL=you@example.com` in `.env.local`. The address is set in `src/lib/company.ts` (`serviceEmail`) and the dropdown choices in `src/lib/serviceTypes.ts`.
+
 ## 3b. Careers page
 Open roles live in `src/lib/jobs.ts`. Edit, add or delete a block to change what shows on `/careers`.
 The descriptions are drafts: replace them with your real job details.

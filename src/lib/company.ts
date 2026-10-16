@@ -7,6 +7,7 @@ export const company = {
   tagline: "Laboratory instruments and supplies, quoted for your lab.",
   email: "info@tayscientific.com.my",
   careersEmail: "admin@tayscientific.com.my", // job applications are sent here
+  serviceEmail: "service@tayscientific.com.my", // service requests from the Services page are sent here
   quotationEmail: "darwisyahliana@gmail.com", // new quotation requests are emailed here (TEST: change to the company inbox later)
   phone: "+607-353 9250",
   phone2: "+607-353 9255",

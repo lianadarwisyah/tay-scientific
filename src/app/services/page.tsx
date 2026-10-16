@@ -1,7 +1,7 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import PageHeader from "@/components/PageHeader";
+import ServiceRequestForm from "@/components/ServiceRequestForm";
 
 export const metadata: Metadata = { title: "Services" };
 
@@ -22,8 +22,10 @@ export default async function ServicesPage() {
             </div>
           ))}
         </div>
-        <Link href="/enquiry" className="btn-main mt-10">Ask about a service</Link>
+        <a href="#request" className="btn-main mt-10">Request a service</a>
       </div>
+      <ServiceRequestForm />
+      <div className="h-12" />
     </>
   );
 }
