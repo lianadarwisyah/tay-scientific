@@ -107,6 +107,12 @@ Run `supabase/migration_events.sql` once. It creates the events table and photo 
 The public page is `/events` (menu: Events). Events dated today or later show as Upcoming, older ones as Past.
 Optional header photo: `public/bg/events.jpg`.
 
+## 3a-15. Photo resizing and storage used
+Photos uploaded in Admin → Products, Banners and Events are resized in the browser before upload (products 1200 px,
+banners 1920 px, events 1600 px, JPG), so phone photos take about 150-400 KB instead of several MB.
+Run `supabase/migration_storage_usage.sql` once to show **Storage used** on the Admin dashboard (uploaded photos per
+section and database size, against the Supabase Free plan limits set in `src/app/admin/(panel)/StorageUsage.tsx`).
+
 ## 3b. Careers page
 Open roles live in `src/lib/jobs.ts`. Edit, add or delete a block to change what shows on `/careers`.
 The descriptions are drafts: replace them with your real job details.

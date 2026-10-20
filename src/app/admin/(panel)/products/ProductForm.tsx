@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { compressImage, PHOTO_SIZES, MAX_PICK_MB, formatBytes } from "@/lib/compressImage";
 import { productImagePath, slugify } from "./productImages";
 
 type Option = { id: string; name: string };
@@ -46,13 +47,19 @@ export default function ProductForm({ brands, categories, initial }: { brands: O
   useEffect(() => { if (!slugTouched) setSlug(slugify(name)); }, [name, slugTouched]);
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
 
-  function pickFile(f?: File | null) {
-    setError("");
+  const [photoNote, setPhotoNote] = useState("");
+  async function pickFile(f?: File | null) {
+    setError(""); setPhotoNote("");
     if (preview) URL.revokeObjectURL(preview);
     if (!f) { setFile(null); setPreview(null); return; }
     if (!TYPES.includes(f.type)) { setFile(null); setPreview(null); return setError("Photo must be JPG, PNG or WebP."); }
-    if (f.size > MAX_MB * 1024 * 1024) { setFile(null); setPreview(null); return setError(`Photo is larger than ${MAX_MB} MB.`); }
-    setFile(f); setPreview(URL.createObjectURL(f));
+    if (f.size > MAX_PICK_MB * 1024 * 1024) { setFile(null); setPreview(null); return setError(`Photo is larger than ${MAX_PICK_MB} MB.`); }
+    // Shrink to web size before upload (saves Supabase storage)
+    let small = f;
+    try { small = await compressImage(f, PHOTO_SIZES.product); } catch { /* keep the original if the browser cannot read it */ }
+    if (small.size > MAX_MB * 1024 * 1024) { setFile(null); setPreview(null); return setError(`Photo is still larger than ${MAX_MB} MB after resizing. Please use a smaller photo.`); }
+    if (small !== f) setPhotoNote(`Resized for the web: ${formatBytes(f.size)} → ${formatBytes(small.size)}`);
+    setFile(small); setPreview(URL.createObjectURL(small));
   }
 
   function setSpec(i: number, col: 0 | 1, v: string) {
@@ -175,13 +182,14 @@ export default function ProductForm({ brands, categories, initial }: { brands: O
             {shownImage
               // eslint-disable-next-line @next/next/no-img-element
               ? <img src={shownImage} alt="Product photo preview" className="max-h-full max-w-full object-contain" />
-              : <span className="text-slate"><b className="block text-ink">Click to choose a photo</b>JPG, PNG or WebP, up to {MAX_MB} MB. Square, white background works best.</span>}
+              : <span className="text-slate"><b className="block text-ink">Click to choose a photo</b>JPG, PNG or WebP. Big phone photos are resized automatically. Square, white background works best.</span>}
           </label>
           <input id="p-photo" type="file" accept={TYPES.join(",")} aria-labelledby="photo-label" onChange={(e) => pickFile(e.target.files?.[0])} className="sr-only" />
           <div className="mt-2 flex flex-wrap gap-3 text-sm">
             {(file || imageUrl) && <button type="button" onClick={() => { pickFile(null); setImageUrl(""); }} className="text-red-700 hover:underline">Remove photo</button>}
             {file && <span className="text-slate">{file.name}</span>}
           </div>
+          {photoNote && <p className="mt-1 text-xs text-green-800" role="status">{photoNote}</p>}
           <details className="mt-2 text-sm">
             <summary className="cursor-pointer text-slate">Or use an image link</summary>
             <label className="sr-only" htmlFor="p-imgurl">Image link</label>

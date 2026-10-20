@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { eventSlug, type EventItem } from "@/lib/events";
 import { todayMY } from "@/lib/types";
+import { compressImage, PHOTO_SIZES, PHOTO_TYPES as TYPES, MAX_PICK_MB, formatBytes } from "@/lib/compressImage";
 
-const MAX_MB = 8;
-const TYPES = ["image/jpeg", "image/png", "image/webp"];
+const MAX_MB = 5; // per photo after resizing
 
 /** Path of a file inside the "events" bucket from its public URL (null for photos stored in /public). */
 export function eventStoragePath(url: string) {
@@ -23,25 +23,33 @@ export default function EventForm({ event }: { event?: EventItem }) {
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(0);
   const [error, setError] = useState("");
+  const [photoNote, setPhotoNote] = useState("");
 
   async function upload(files: FileList | null) {
     if (!files?.length) return;
-    setError("");
+    setError(""); setPhotoNote("");
     const supabase = createClient();
     const list = Array.from(files);
-    const bad = list.find((f) => !TYPES.includes(f.type) || f.size > MAX_MB * 1024 * 1024);
-    if (bad) return setError(`"${bad.name}" is not allowed. Use JPG, PNG or WebP photos up to ${MAX_MB} MB each.`);
+    const bad = list.find((f) => !TYPES.includes(f.type) || f.size > MAX_PICK_MB * 1024 * 1024);
+    if (bad) return setError(`"${bad.name}" is not allowed. Use JPG, PNG or WebP photos up to ${MAX_PICK_MB} MB each.`);
     setUploading(list.length);
     const urls: string[] = [];
-    for (const f of list) {
+    let before = 0, after = 0;
+    for (const original of list) {
+      // Shrink to web size before upload (saves Supabase storage)
+      let f = original;
+      try { f = await compressImage(original, PHOTO_SIZES.event); } catch { /* keep the original */ }
+      if (f.size > MAX_MB * 1024 * 1024) { setError(`"${original.name}" is still larger than ${MAX_MB} MB after resizing.`); break; }
+      before += original.size; after += f.size;
       const ext = f.type === "image/png" ? "png" : f.type === "image/webp" ? "webp" : "jpg";
       const path = `${todayMY().slice(0, 7)}/${crypto.randomUUID()}.${ext}`;
       const up = await supabase.storage.from("events").upload(path, f, { contentType: f.type, cacheControl: "31536000" });
-      if (up.error) { setError(`Upload failed for "${f.name}": ${up.error.message}`); break; }
+      if (up.error) { setError(`Upload failed for "${original.name}": ${up.error.message}`); break; }
       urls.push(supabase.storage.from("events").getPublicUrl(path).data.publicUrl);
       setUploading((n) => n - 1);
     }
     setUploading(0);
+    if (urls.length && after < before) setPhotoNote(`${urls.length} photo(s) resized for the web: ${formatBytes(before)} → ${formatBytes(after)}`);
     setImages((cur) => [...cur, ...urls]);
   }
 
@@ -113,9 +121,10 @@ export default function EventForm({ event }: { event?: EventItem }) {
 
       <fieldset>
         <legend className="label">Photos and poster</legend>
-        <p className="text-sm text-slate">Upload several at once (JPG, PNG or WebP, up to {MAX_MB} MB each). The <b>first photo is the cover</b> on the Events page.</p>
+        <p className="text-sm text-slate">Upload several at once (JPG, PNG or WebP). Phone photos are resized automatically to save space. The <b>first photo is the cover</b> on the Events page.</p>
         <input type="file" accept={TYPES.join(",")} multiple onChange={(e) => { upload(e.target.files); e.target.value = ""; }} className="mt-3 block text-sm" disabled={uploading > 0} />
-        {uploading > 0 && <p className="mt-2 text-sm text-slate" role="status">Uploading {uploading} photo(s)...</p>}
+        {uploading > 0 && <p className="mt-2 text-sm text-slate" role="status">Resizing and uploading {uploading} photo(s)...</p>}
+        {photoNote && uploading === 0 && <p className="mt-2 text-sm text-green-800" role="status">{photoNote}</p>}
         {images.length > 0 && (
           <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {images.map((src, i) => (

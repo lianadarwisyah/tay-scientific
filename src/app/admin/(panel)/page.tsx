@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import StorageUsage from "./StorageUsage";
 
 export default async function Dashboard() {
   const supabase = (await createClient())!;
@@ -31,7 +32,7 @@ export default async function Dashboard() {
           </div>
         ))}
       </div>
-      <p className="mt-8 text-sm text-slate">Next up: product, category and brand management, Excel import, enquiries inbox and content editing.</p>
+      <StorageUsage />
     </>
   );
 }

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { todayMY } from "@/lib/types";
+import { compressImage, PHOTO_SIZES, MAX_PICK_MB, formatBytes } from "@/lib/compressImage";
 
 const MAX_MB = 5;
 const TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -26,15 +27,22 @@ export default function PromotionForm() {
 
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
 
-  function pick(f?: File | null) {
-    setMessage("");
+  const [photoNote, setPhotoNote] = useState("");
+  async function pick(f?: File | null) {
+    setMessage(""); setPhotoNote("");
     if (preview) URL.revokeObjectURL(preview);
     if (!f) { setFile(null); setPreview(null); return; }
-    if (!TYPES.includes(f.type)) { setFile(null); setPreview(null); if (fileRef.current) fileRef.current.value = ""; setState("error"); return setMessage("Please choose a JPG, PNG or WebP image."); }
-    if (f.size > MAX_MB * 1024 * 1024) { setFile(null); setPreview(null); if (fileRef.current) fileRef.current.value = ""; setState("error"); return setMessage(`Image is too large. Maximum ${MAX_MB} MB.`); }
+    const reject = (msg: string) => { setFile(null); setPreview(null); if (fileRef.current) fileRef.current.value = ""; setState("error"); setMessage(msg); };
+    if (!TYPES.includes(f.type)) return reject("Please choose a JPG, PNG or WebP image.");
+    if (f.size > MAX_PICK_MB * 1024 * 1024) return reject(`Image is too large. Maximum ${MAX_PICK_MB} MB.`);
+    // Shrink to banner size before upload (saves Supabase storage)
+    let small = f;
+    try { small = await compressImage(f, PHOTO_SIZES.banner); } catch { /* keep the original */ }
+    if (small.size > MAX_MB * 1024 * 1024) return reject(`Image is still larger than ${MAX_MB} MB after resizing. Please use a smaller image.`);
+    if (small !== f) setPhotoNote(`Resized for the web: ${formatBytes(f.size)} → ${formatBytes(small.size)}`);
     setState("idle");
-    setFile(f);
-    setPreview(URL.createObjectURL(f));
+    setFile(small);
+    setPreview(URL.createObjectURL(small));
   }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -93,12 +101,13 @@ export default function PromotionForm() {
             ) : (
               <>
                 <span className="font-semibold">Click to choose an image</span>
-                <span className="text-slate">JPG, PNG or WebP, up to {MAX_MB} MB. Wide banner, 1920 × 800 px (2.4 : 1), works best.</span>
+                <span className="text-slate">JPG, PNG or WebP. Large images are resized automatically. Wide banner, 1920 × 800 px (2.4 : 1), works best.</span>
               </>
             )}
           </label>
           <input ref={fileRef} id="promo-image" type="file" accept={TYPES.join(",")} onChange={(e) => pick(e.target.files?.[0])} className="sr-only" />
           {file && <p className="mt-1 text-xs text-slate">{file.name} · click the image to change it</p>}
+          {photoNote && <p className="mt-1 text-xs text-green-800" role="status">{photoNote}</p>}
         </div>
 
         <div><label className="label" htmlFor="promo-title">Title *</label><input id="promo-title" name="title" required maxLength={120} placeholder="e.g. Buy 1 Free 1 on Micropipettes" className="field" /></div>
