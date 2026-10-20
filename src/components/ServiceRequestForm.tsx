@@ -10,6 +10,7 @@ export default function ServiceRequestForm() {
   const [type, setType] = useState("");
   const [state, setState] = useState<"idle" | "busy" | "sent" | "error">("idle");
   const [error, setError] = useState("");
+  const [ref, setRef] = useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -18,7 +19,7 @@ export default function ServiceRequestForm() {
       const res = await fetch("/api/service-request", { method: "POST", body: new FormData(e.currentTarget) });
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.ok) {
-        setState("sent"); formRef.current?.reset(); setType("");
+        setRef(json.ref ?? null); setState("sent"); formRef.current?.reset(); setType("");
         sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       } else {
         setError(json.error || "Your request could not be sent. Please try again."); setState("error");
@@ -49,7 +50,8 @@ export default function ServiceRequestForm() {
         {state === "sent" ? (
           <div className="h-fit rounded-lg bg-brand-soft p-8" role="status">
             <p className="font-display text-3xl font-bold">Request sent</p>
-            <p className="mt-2">Thank you. Our service team has your request and will contact you soon.</p>
+            {ref && <p className="mt-2 text-lg">Your reference: <strong>{ref}</strong></p>}
+            <p className="mt-2">Thank you. Our service team has your request and will contact you soon.{ref && " Please quote your reference when you contact us."}</p>
             <button type="button" onClick={() => setState("idle")} className="btn-line mt-6 px-5 py-2.5">Send another request</button>
           </div>
         ) : (

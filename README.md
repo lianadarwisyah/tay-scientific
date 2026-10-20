@@ -93,7 +93,19 @@ Then staff can add, edit, hide and delete products and upload photos in **Admin 
 Run `supabase/migration_quotation_address.sql` once. The quote cart then saves the customer's address; it shows in Admin → Quotations, in the quotation email and on the customer's printable request.
 
 ## 3a-13. Service request form
-The Services page has a "Request a service" form (type of service, equipment info, customer contact). It is emailed to `service@tayscientific.com.my` using the same SMTP settings as the careers form. To send test requests elsewhere, set `SERVICE_EMAIL=you@example.com` in `.env.local`. The address is set in `src/lib/company.ts` (`serviceEmail`) and the dropdown choices in `src/lib/serviceTypes.ts`.
+The Services page has a "Request a service" form (type of service, equipment info, customer contact).
+Run `supabase/migration_service_requests.sql` once: each request is then saved in the database with a reference
+(e.g. SR-2026-0001), shown in **Admin → Service requests** (status, staff notes, search) and emailed to
+`service@tayscientific.com.my` using the same SMTP settings as the careers form. To send test emails elsewhere, set
+`SERVICE_EMAIL=you@example.com` in `.env.local`. The address is `serviceEmail` in `src/lib/company.ts`; the dropdown
+choices are in `src/lib/serviceTypes.ts` (keep them in step with the list in the SQL function).
+
+## 3a-14. Events page
+Run `supabase/migration_events.sql` once. It creates the events table and photo storage, and adds the first event
+(Product Knowledge Sharing Session, 30 Sep 2026, photos in `public/events/`). Staff add, edit, hide and delete events in
+**Admin → Events** (title, date, time, location, collaboration partners, summary, write-up and photos; the first photo is the cover).
+The public page is `/events` (menu: Events). Events dated today or later show as Upcoming, older ones as Past.
+Optional header photo: `public/bg/events.jpg`.
 
 ## 3b. Careers page
 Open roles live in `src/lib/jobs.ts`. Edit, add or delete a block to change what shows on `/careers`.

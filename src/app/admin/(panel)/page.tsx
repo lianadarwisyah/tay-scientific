@@ -8,20 +8,21 @@ export default async function Dashboard() {
     if (filter) q = q.eq(filter[0], filter[1]);
     return (await q).count ?? 0;
   };
-  const [newQuotes, newEnq, products, promos] = await Promise.all([
-    count("quotations", ["status", "new"]), count("enquiries", ["status", "new"]), count("products"),
+  const [newQuotes, newService, newEnq, products, promos] = await Promise.all([
+    count("quotations", ["status", "new"]), count("service_requests", ["status", "new"]), count("enquiries", ["status", "new"]), count("products"),
     count("promotions", ["is_active", "true"]),
   ]);
   const stats = [
     { label: "New quotations", value: newQuotes, href: "/admin/quotations" },
+    { label: "New service requests", value: newService, href: "/admin/service-requests" },
     { label: "New enquiries", value: newEnq, href: "/admin/enquiries" },
     { label: "Products", value: products, href: "/admin/products" },
-    { label: "Active promotions", value: promos, href: "/admin/promotions" },
+    { label: "Active banners", value: promos, href: "/admin/promotions" },
   ];
   return (
     <>
       <h1 className="text-4xl font-bold">Dashboard</h1>
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {stats.map((s) => (
           <div key={s.label} className="rounded-lg border border-line bg-white p-5">
             <p className="text-sm text-slate">{s.label}</p>
