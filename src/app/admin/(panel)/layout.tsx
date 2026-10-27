@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import SignOutButton from "./SignOutButton";
+import { Suspense } from "react";
+import AdminBreadcrumb from "./AdminBreadcrumb";
 
 export const dynamic = "force-dynamic";
 
@@ -20,24 +20,9 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     );
   }
   return (
-    <div className="container-x py-10">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
-        <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold" aria-label="Admin">
-          <Link href="/admin" className="hover:text-brand">Dashboard</Link>
-          <Link href="/admin/products" className="hover:text-brand">Products</Link>
-          <Link href="/admin/quotations" className="hover:text-brand">Quotations</Link>
-          <Link href="/admin/service-requests" className="hover:text-brand">Service requests</Link>
-          <Link href="/admin/enquiries" className="hover:text-brand">Enquiries</Link>
-          <Link href="/admin/events" className="hover:text-brand">Events</Link>
-          <Link href="/admin/promotions" className="hover:text-brand">Banners</Link>
-        </nav>
-        <div className="flex flex-wrap items-center gap-4">
-          <Link href="/" className="text-sm font-semibold text-brand hover:underline">View website ↗</Link>
-          <span className="text-sm text-slate">{user.email}</span>
-          <SignOutButton />
-        </div>
-      </div>
-      <div className="pt-8">{children}</div>
+    <div className="container-x py-10 print:max-w-none print:p-0">
+      <Suspense fallback={null}><AdminBreadcrumb /></Suspense>
+      <div>{children}</div>
     </div>
   );
 }

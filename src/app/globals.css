@@ -31,6 +31,10 @@
 @media print {
   .no-print { display: none !important; }
   body { background: #fff; }
+  /* Service reports print on A4 */
+  @page { size: A4; margin: 12mm; }
+  .report-sheet { max-width: none !important; width: 700px !important; margin: 0 auto !important; }
+  .report-sheet img { break-inside: avoid; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -57,3 +61,16 @@
   .marquee-track { flex-wrap: wrap; justify-content: center; width: auto; }
   .marquee-track > li[aria-hidden="true"] { display: none; }
 }
+
+/* Service report: print the yellow SECTION labels and red text even when "Background graphics" is off */
+.report-sheet, .report-sheet * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+/* Service report: all lines solid black and the same thickness (thin 1px lines look grey in PDF viewers) */
+.report-sheet .border { border-width: 1.5px; }
+.report-sheet .border-x { border-left-width: 1.5px; border-right-width: 1.5px; }
+.report-sheet .border-y { border-top-width: 1.5px; border-bottom-width: 1.5px; }
+.report-sheet .border-t { border-top-width: 1.5px; }
+.report-sheet .border-b { border-bottom-width: 1.5px; }
+.report-sheet .border-r-0 { border-right-width: 0; }
+.report-sheet .border-l-0 { border-left-width: 0; }
+.report-sheet .border-black { border-color: #000; }

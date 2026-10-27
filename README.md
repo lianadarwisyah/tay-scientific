@@ -113,6 +113,48 @@ banners 1920 px, events 1600 px, JPG), so phone photos take about 150-400 KB ins
 Run `supabase/migration_storage_usage.sql` once to show **Storage used** on the Admin dashboard (uploaded photos per
 section and database size, against the Supabase Free plan limits set in `src/app/admin/(panel)/StorageUsage.tsx`).
 
+## 3a-16. Admin areas, Service portal and Career jobs
+The admin dashboard shows three boxes: **Sales** (Quotations, Enquiries, Products, Banners, Events),
+**Admin / Finance** (Career jobs, Banners) and **Services** (New service requests, Service portal).
+Storage used is shown at the bottom of the dashboard. Click a box to see its sections, then a section to open its list. "Dashboard / Sales / Quotations" links at the top of
+each page lead back. The areas and their sections are set in `src/app/admin/(panel)/adminGroups.ts`.
+
+**Service portal** (replaces the old Staff Portal / service-recorder): run `supabase/migration_service_portal.sql` once.
+Staff add a service record when an instrument comes in (status goods received, in progress, completed), search and
+edit records, and fill in the report details (work scope with PASS/FAIL and photos, working time, Sections G, H, I).
+Report numbers are given automatically as TSI/SR/<year>/<number>. To continue from your old numbers, run the
+commented `insert into service_report_counters ...` line in that file with the last number used.
+Only completed jobs have a **service report** (Print / Save as PDF, A4, same layout as the paper form SR V2.0).
+A website service request can be turned into a service record with "Create service job from this request".
+Ongoing jobs show in the Service portal (Goods received / In progress tabs).
+Filter the list by month and year (counted by date in or date out) to see how many jobs were done in that period;
+"Download Excel (.xlsx)" exports the filtered jobs plus a Summary sheet (by status, month, service type, technician, brand).
+After updating, run `npm install` once (adds the exceljs package).
+More than one instrument on a report: run `supabase/migration_service_equipment.sql` once, then use
+"+ Add another instrument" on the form (each becomes a column in Section D). Section I has a customer approval signature box.
+Customer emails: run `supabase/migration_service_notifications.sql` once (after the service portal file). When staff
+save a record with "Email the customer about this update" ticked, the company email gets a goods received / in progress /
+completed email (copy to the service inbox). The completed email has a "View service report" link
+(`/service-report/<code>`, a private link only the customer receives). Each record lists the emails sent.
+The report is computer-generated: it has no signature boxes and says no signature is required.
+
+**Career jobs**: run `supabase/migration_jobs.sql` (job openings, copied from `src/lib/jobs.ts`) and
+`supabase/migration_job_applications.sql` (applications + private CV storage) once. Admin → Admin / Finance → Career jobs
+lists everyone who applied (position, contact details, Download CV, status, staff notes). "Manage job openings" on that
+page adds, edits, closes and deletes openings; the Careers page shows open jobs. Applications are still emailed too.
+
+## 3a-17. Calibration log and due reminders
+Run `supabase/migration_calibrations.sql` once. Admin → Services → Calibration log: add each calibration (instrument,
+customer, calibration date, validity in months, in-house or external provider, cert no.); the due date is worked out
+automatically and reference numbers are given as TSI/CR/<year>/<number> (continue your old numbering with the commented line in the SQL file).
+Filter by month/year (calibration or due date) and status (overdue / due within 1 month / valid), and Download Excel.
+**Reminders:** 1 month before the due date (e.g. due 26 Nov → emailed 26 Oct) the customer email gets a "Calibration Due Notification" (one email per
+customer listing all their instruments), copied to `calibrationReminderEmail` in `src/lib/company.ts`
+(for now darwisyahliana@gmail.com; or set CALIBRATION_REMINDER_EMAIL). Each due date is reminded once.
+- Live site (Vercel): `vercel.json` runs the check every day at 9:00 am Malaysia time. Add `CRON_SECRET` and
+  `SUPABASE_SERVICE_ROLE_KEY` to Vercel → Settings → Environment Variables (see `.env.example`).
+- Any time (also on your computer): "Send due reminders now" on the Calibration log page.
+
 ## 3b. Careers page
 Open roles live in `src/lib/jobs.ts`. Edit, add or delete a block to change what shows on `/careers`.
 The descriptions are drafts: replace them with your real job details.

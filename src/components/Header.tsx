@@ -44,7 +44,6 @@ export default function Header() {
           </div>
           <div className="hidden items-center gap-5 md:flex">
             <a href={company.links.checkService} target="_blank" rel="noopener" className="hover:text-ink">Check Service</a>
-            <a href={company.links.portal} target="_blank" rel="noopener" className="hover:text-ink">Staff Portal</a>
             <Link href="/admin" className="hover:text-ink">Admin</Link>
           </div>
         </div>
@@ -92,7 +91,6 @@ export default function Header() {
                 </Link>
               ))}
               <a href={company.links.checkService} target="_blank" rel="noopener" className="border-b border-line/60 py-3 text-sm text-slate">Check Service</a>
-              <a href={company.links.portal} target="_blank" rel="noopener" className="border-b border-line/60 py-3 text-sm text-slate">Staff Portal</a>
               <Link href="/admin" className="py-3 text-sm text-slate">Admin</Link>
             </div>
           </nav>

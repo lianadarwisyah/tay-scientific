@@ -49,7 +49,7 @@ export default async function StorageUsage() {
           <ul className="mt-3 space-y-1 text-sm text-slate">
             {usage.buckets.length === 0 && <li>No photos uploaded yet.</li>}
             {usage.buckets.map((b) => (
-              <li key={b.bucket} className="flex justify-between"><span>{BUCKET_NAMES[b.bucket] ?? b.bucket} ({b.files} files)</span><span>{formatBytes(Number(b.bytes))}</span></li>
+              <li key={b.bucket} className="flex justify-between"><span>{BUCKET_NAMES[b.bucket] ?? b.bucket} ({b.files} {Number(b.files) === 1 ? "file" : "files"})</span><span>{formatBytes(Number(b.bytes))}</span></li>
             ))}
           </ul>
         </div>

@@ -25,4 +25,5 @@ end $$;
 revoke all on function admin_storage_usage() from public;
 grant execute on function admin_storage_usage() to authenticated;
 
-
+-- Done. Open the Admin dashboard on the website to see "Storage used".
+-- (Don't test it here with select: the SQL Editor is not an admin login, so it would say "Admins only".)

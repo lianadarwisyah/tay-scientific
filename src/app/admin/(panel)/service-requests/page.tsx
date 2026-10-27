@@ -44,7 +44,7 @@ export default async function ServiceRequestsAdmin({ searchParams }: { searchPar
 
   return (
     <>
-      <h1 className="text-4xl font-bold">Service requests</h1>
+      <h1 className="text-4xl font-bold">New service requests</h1>
       <p className="mt-2 max-w-3xl text-slate">Requests from the &quot;Request a service&quot; form on the Services page. Each one is also emailed to the service inbox.</p>
 
       {error ? (
@@ -97,6 +97,9 @@ export default async function ServiceRequestsAdmin({ searchParams }: { searchPar
                   </div>
                 </div>
 
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Link href={`/admin/service-portal/new?from=${r.id}`} className="btn-main px-4 py-2 text-sm">Create service job from this request</Link>
+                </div>
                 <RequestActions id={r.id} refCode={r.ref} status={r.status} notes={r.staff_notes} />
               </article>
             ))}

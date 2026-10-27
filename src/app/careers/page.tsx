@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import CareersBoard from "@/components/CareersBoard";
 import ApplicationForm from "@/components/ApplicationForm";
-import { jobs } from "@/lib/jobs";
+import { getOpenJobs } from "@/lib/getJobs";
 
 export const metadata: Metadata = {
   title: "Careers",
@@ -21,7 +21,10 @@ const steps = [
   { title: "Submit", text: "Your application goes straight to our hiring team, who contact you if you are shortlisted." },
 ];
 
-export default function CareersPage() {
+export const dynamic = "force-dynamic";
+
+export default async function CareersPage() {
+  const jobs = await getOpenJobs();
   return (
     <>
       <PageHeader
