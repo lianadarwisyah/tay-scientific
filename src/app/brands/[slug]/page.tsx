@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient as createClient } from "@/lib/supabase/public";
 import PageHeader from "@/components/PageHeader";
 import Chip from "@/components/Chip";
 import Pagination from "@/components/Pagination";
@@ -9,12 +9,14 @@ import BrandLogo from "@/components/BrandLogo";
 import AddToCartButton from "@/components/AddToCartButton";
 import type { Product } from "@/lib/types";
 
+export const revalidate = 60; // cached for speed; Admin saves refresh it straight away
+
 const PAGE_SIZE = 20;
 
 type BrandRow = { id: string; name: string; slug: string; logo_url: string | null; website_url: string | null; description: string | null };
 
 async function getBrand(slug: string) {
-  const supabase = await createClient();
+  const supabase = createClient();
   if (!supabase) return null;
   const { data } = await supabase.from("brands").select("id,name,slug,logo_url,website_url,description").eq("slug", slug).maybeSingle();
   return data as BrandRow | null;
@@ -38,7 +40,7 @@ export default async function BrandPage({ params, searchParams }: { params: Prom
   const page = Math.max(1, Number(sp.page) || 1);
   const brand = await getBrand(slug);
   if (!brand) notFound();
-  const supabase = (await createClient())!;
+  const supabase = createClient()!;
 
   const [{ data: cats }, { data: brandCats }] = await Promise.all([
     supabase.from("categories").select("id,name,slug").order("sort_order"),

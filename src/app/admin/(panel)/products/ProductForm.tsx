@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { refreshWebsite } from "@/lib/refreshWebsite";
 import { compressImage, PHOTO_SIZES, MAX_PICK_MB, formatBytes } from "@/lib/compressImage";
 import { productImagePath, slugify } from "./productImages";
 
@@ -124,7 +125,7 @@ export default function ProductForm({ brands, categories, initial }: { brands: O
     if (uploadedPath && oldPath) await supabase.storage.from("product-images").remove([oldPath]);
 
     router.push(`/admin/products?saved=${isActive ? "1" : "hidden"}`);
-    router.refresh();
+    (refreshWebsite(), router.refresh());
   }
 
   const shownImage = preview || imageUrl;

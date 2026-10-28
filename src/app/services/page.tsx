@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient as createClient } from "@/lib/supabase/public";
 import PageHeader from "@/components/PageHeader";
 import ServiceRequestForm from "@/components/ServiceRequestForm";
+
+export const revalidate = 60; // cached for speed; Admin saves refresh it straight away
 
 export const metadata: Metadata = { title: "Services" };
 
 export default async function ServicesPage() {
-  const supabase = await createClient();
+  const supabase = createClient();
   const { data: services } = supabase
     ? await supabase.from("services").select("id,title,description").eq("is_active", true).order("sort_order")
     : { data: [] };

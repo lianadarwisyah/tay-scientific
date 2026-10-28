@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient as createClient } from "@/lib/supabase/public";
 import { jobs as fallbackJobs, type Job } from "@/lib/jobs";
 
 const list = (v: unknown): string[] => (Array.isArray(v) ? v.map(String).filter(Boolean) : []);
@@ -8,7 +8,7 @@ const list = (v: unknown): string[] => (Array.isArray(v) ? v.map(String).filter(
  * Falls back to src/lib/jobs.ts until supabase/migration_jobs.sql has been run.
  */
 export async function getOpenJobs(): Promise<Job[]> {
-  const supabase = await createClient();
+  const supabase = createClient();
   if (!supabase) return fallbackJobs;
   const { data, error } = await supabase.from("jobs").select("*").eq("is_open", true).order("sort_order").order("title");
   if (error) return fallbackJobs;

@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="container-x grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_0.8fr]">
         <div>
           <div className="inline-block rounded-md bg-white px-3 py-2">
-            <Image src="/logo.png" alt={company.name} width={1527} height={354} className="h-9 w-auto" />
+            <Image src="/logo.png" alt={company.name} width={640} height={148} className="h-9 w-auto" />
           </div>
           <p className="mt-4 max-w-xs text-sm text-white/70">{company.tagline}</p>
           <a href={whatsappLink("Hi Tay Scientific, I would like to enquire about ")} target="_blank" rel="noopener" className="btn-wa mt-5">

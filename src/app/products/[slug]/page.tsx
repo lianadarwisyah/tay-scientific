@@ -1,21 +1,25 @@
 import Link from "next/link";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient as createClient } from "@/lib/supabase/public";
 import { ProductImage } from "@/components/ProductCard";
 import AddToCartButton from "@/components/AddToCartButton";
 import { whatsappLink } from "@/lib/company";
 import type { Product } from "@/lib/types";
 
-async function getProduct(slug: string) {
-  const supabase = await createClient();
+export const revalidate = 60; // cached for speed; Admin saves refresh it straight away
+
+/** cache(): the title (metadata) and the page share one database request */
+const getProduct = cache(async (slug: string) => {
+  const supabase = createClient();
   if (!supabase) return null;
   const { data } = await supabase
     .from("products")
     .select("*,brand:brands(name,slug),category:categories(name,slug)")
     .eq("slug", slug).eq("is_active", true).maybeSingle();
   return data as unknown as Product | null;
-}
+});
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;

@@ -21,7 +21,7 @@ const steps = [
   { title: "Submit", text: "Your application goes straight to our hiring team, who contact you if you are shortlisted." },
 ];
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // cached; Admin saves refresh it straight away
 
 export default async function CareersPage() {
   const jobs = await getOpenJobs();

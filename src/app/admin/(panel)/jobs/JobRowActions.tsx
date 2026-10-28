@@ -3,11 +3,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { refreshWebsite } from "@/lib/refreshWebsite";
 
 export default function JobRowActions({ id, title, open }: { id: string; title: string; open: boolean }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
-  const run = async (fn: () => PromiseLike<unknown>) => { setBusy(true); await fn(); setBusy(false); router.refresh(); };
+  const run = async (fn: () => PromiseLike<unknown>) => { setBusy(true); await fn(); setBusy(false); (refreshWebsite(), router.refresh()); };
   return (
     <div className="flex flex-wrap gap-2">
       <Link href={`/admin/jobs/${id}`} className="btn-line px-3 py-1.5 text-sm">Edit</Link>

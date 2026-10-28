@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { refreshWebsite } from "@/lib/refreshWebsite";
 import { todayMY } from "@/lib/types";
 import { compressImage, PHOTO_SIZES, MAX_PICK_MB, formatBytes } from "@/lib/compressImage";
 
@@ -85,7 +86,7 @@ export default function PromotionForm() {
     if (fileRef.current) fileRef.current.value = "";
     setState("saved");
     setMessage("Promotion saved. It shows on the home page between its start and end dates.");
-    router.refresh();
+    (refreshWebsite(), router.refresh());
   }
 
   return (

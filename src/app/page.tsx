@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient as createClient } from "@/lib/supabase/public";
 import { company } from "@/lib/company";
 import { jobs } from "@/lib/jobs";
 import OurProducts from "@/components/OurProducts";
@@ -9,8 +9,10 @@ import HeroBanner from "@/components/HeroBanner";
 import { defaultAds } from "@/lib/defaultAds";
 import { todayMY, type Product, type Service, type Promotion } from "@/lib/types";
 
+export const revalidate = 60; // cached for speed; Admin saves refresh it straight away
+
 export default async function Home() {
-  const supabase = await createClient();
+  const supabase = createClient();
   let featured: Product[] = [], services: Service[] = [], promos: Promotion[] = [], partnerBrands: PartnerBrand[] = [];
   let usePromotionsOnly = false;
 

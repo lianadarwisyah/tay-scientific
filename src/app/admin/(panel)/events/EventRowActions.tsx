@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { refreshWebsite } from "@/lib/refreshWebsite";
 import { eventStoragePath } from "./EventForm";
 
 export default function EventRowActions({ id, title, published, images }: { id: string; title: string; published: boolean; images: string[] }) {
@@ -12,7 +13,7 @@ export default function EventRowActions({ id, title, published, images }: { id: 
   async function toggle() {
     setBusy(true);
     await createClient().from("events").update({ is_published: !published }).eq("id", id);
-    setBusy(false); router.refresh();
+    setBusy(false); (refreshWebsite(), router.refresh());
   }
   async function remove() {
     if (!confirm(`Delete "${title}" and its photos? This cannot be undone.`)) return;
@@ -21,7 +22,7 @@ export default function EventRowActions({ id, title, published, images }: { id: 
     const { error } = await supabase.from("events").delete().eq("id", id);
     const paths = images.map(eventStoragePath).filter((p): p is string => !!p);
     if (!error && paths.length) await supabase.storage.from("events").remove(paths);
-    setBusy(false); router.refresh();
+    setBusy(false); (refreshWebsite(), router.refresh());
   }
 
   return (

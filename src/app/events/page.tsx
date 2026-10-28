@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient as createClient } from "@/lib/supabase/public";
 import PageHeader from "@/components/PageHeader";
 import EventCard from "@/components/EventCard";
 import { isUpcoming, type EventItem } from "@/lib/events";
@@ -9,10 +9,10 @@ export const metadata: Metadata = {
   title: "Events",
   description: "Seminars, product knowledge sessions, exhibitions and collaborations by Tay Scientific Instruments.",
 };
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // cached; Admin saves refresh it straight away
 
 export default async function EventsPage() {
-  const supabase = await createClient();
+  const supabase = createClient();
   const { data } = supabase
     ? await supabase.from("events").select("*").eq("is_published", true).order("event_date", { ascending: false }).limit(200)
     : { data: [] };

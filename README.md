@@ -155,6 +155,12 @@ customer listing all their instruments), copied to `calibrationReminderEmail` in
   `SUPABASE_SERVICE_ROLE_KEY` to Vercel → Settings → Environment Variables (see `.env.example`).
 - Any time (also on your computer): "Send due reminders now" on the Calibration log page.
 
+## 3a-18. Speed
+Public pages (home, products, brands, services, events, careers) read the database through a cached client
+(`src/lib/supabase/public.ts`): results are kept for 60 seconds, so clicks don't wait for the database every time.
+Admin saves (products, banners, events, jobs) clear the cache at once via `/api/revalidate`.
+`vercel.json` runs the server in Mumbai (`bom1`), the same region as the Supabase project (ap-south-1). If Supabase ever moves, change it to match (Singapore = `sin1`).
+
 ## 3b. Careers page
 Open roles live in `src/lib/jobs.ts`. Edit, add or delete a block to change what shows on `/careers`.
 The descriptions are drafts: replace them with your real job details.

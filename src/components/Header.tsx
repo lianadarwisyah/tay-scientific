@@ -52,7 +52,7 @@ export default function Header() {
       <header className="no-print sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur">
         <div className="container-x flex h-[72px] items-center justify-between gap-2 sm:gap-4">
           <Link href="/" className="flex shrink-0 items-center" aria-label={`${company.name} home`}>
-            <Image src="/logo.png" alt={company.name} width={1527} height={354} priority className="h-7 w-auto min-[400px]:h-8 sm:h-11" />
+            <Image src="/logo.png" alt={company.name} width={640} height={148} priority className="h-7 w-auto min-[400px]:h-8 sm:h-11" />
           </Link>
 
           <nav className="hidden items-center gap-1 text-[15px] font-semibold md:flex" aria-label="Main">

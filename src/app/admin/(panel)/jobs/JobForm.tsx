@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { refreshWebsite } from "@/lib/refreshWebsite";
 
 export type JobRow = {
   id: string; slug: string; title: string; department: string; location: string; type: string; teaser: string; summary: string;
@@ -42,7 +43,7 @@ export default function JobForm({ job }: { job?: JobRow }) {
       : await supabase.from("jobs").insert({ ...row, slug: `${slugify(title) || "job"}-${crypto.randomUUID().slice(0, 4)}` });
     if (error) { setBusy(false); return setError("Could not save: " + error.message); }
     router.push("/admin/jobs/openings?saved=1");
-    router.refresh();
+    (refreshWebsite(), router.refresh());
   }
 
   const area = (name: keyof JobRow, label: string, hint: string, rows = 5) => (

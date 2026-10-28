@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient as createClient } from "@/lib/supabase/public";
 import { activeCounts } from "@/lib/catalog";
 import ProductCard from "@/components/ProductCard";
 import PageHeader from "@/components/PageHeader";
@@ -10,6 +10,8 @@ import Chip from "@/components/Chip";
 import Pagination from "@/components/Pagination";
 import { searchProducts, fetchAllRows } from "@/lib/search";
 import type { Product, Brand } from "@/lib/types";
+
+export const revalidate = 60; // cached for speed; Admin saves refresh it straight away
 
 export const metadata: Metadata = { title: "Products" };
 const PAGE_SIZE = 12;
@@ -21,7 +23,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
   const sp = await searchParams;
   const q = (sp.q ?? "").replace(/[,()%*]/g, " ").trim();
   const page = Math.max(1, Number(sp.page) || 1);
-  const supabase = await createClient();
+  const supabase = createClient();
 
   let cats: CatRow[] = [], brands: Pick<Brand, "id" | "name" | "slug">[] = [];
   if (supabase) {

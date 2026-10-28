@@ -1,9 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient as createClient } from "@/lib/supabase/public";
 import Chip from "@/components/Chip";
 import BrandLogo from "@/components/BrandLogo";
 import { knownBrandLogo } from "@/lib/brandLogos";
+
+export const revalidate = 60; // cached for speed; Admin saves refresh it straight away
 
 export const metadata: Metadata = {
   title: "Brands",
@@ -16,7 +18,7 @@ type Pair = { brand_id: string | null; category_id: string | null };
 
 export default async function BrandsPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const sp = await searchParams;
-  const supabase = await createClient();
+  const supabase = createClient();
   let cats: Cat[] = [], brands: Brand[] = [];
   const pairs: Pair[] = [];
 

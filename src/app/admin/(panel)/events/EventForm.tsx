@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { refreshWebsite } from "@/lib/refreshWebsite";
 import { eventSlug, type EventItem } from "@/lib/events";
 import { todayMY } from "@/lib/types";
 import { compressImage, PHOTO_SIZES, PHOTO_TYPES as TYPES, MAX_PICK_MB, formatBytes } from "@/lib/compressImage";
@@ -94,7 +95,7 @@ export default function EventForm({ event }: { event?: EventItem }) {
     const paths = removed.filter((u) => !images.includes(u)).map(eventStoragePath).filter((p): p is string => !!p);
     if (paths.length) await supabase.storage.from("events").remove(paths);
     router.push("/admin/events?saved=1");
-    router.refresh();
+    (refreshWebsite(), router.refresh());
   }
 
   return (

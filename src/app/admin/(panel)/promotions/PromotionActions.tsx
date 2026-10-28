@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { refreshWebsite } from "@/lib/refreshWebsite";
 
 /** Path of the file inside the "promotions" bucket, taken from its public URL (null for ready-made /ads/ banners). */
 function storagePath(url: string) {
@@ -24,7 +25,7 @@ export default function PromotionActions({ id, isActive, imageUrl, title, endsOn
     setBusy(true); setError("");
     const res = await fn();
     setBusy(false);
-    if (res && res.error) setError("Could not save. Please try again."); else router.refresh();
+    if (res && res.error) setError("Could not save. Please try again."); else (refreshWebsite(), router.refresh());
   }
 
   const toggle = () => run(async () => await createClient().from("promotions").update({ is_active: !isActive }).eq("id", id));

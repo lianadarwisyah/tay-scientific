@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cache } from "react";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient as createClient } from "@/lib/supabase/public";
 import EventGallery from "@/components/EventGallery";
 import { formatEventDate, isUpcoming, type EventItem } from "@/lib/events";
 import { company } from "@/lib/company";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // cached; Admin saves refresh it straight away
 
-async function getEvent(slug: string) {
-  const supabase = await createClient();
+const getEvent = cache(async (slug: string) => {
+  const supabase = createClient();
   if (!supabase) return null;
   const { data } = await supabase.from("events").select("*").eq("slug", slug).eq("is_published", true).maybeSingle();
   if (!data) return null;
   const e = data as EventItem;
   return { ...e, images: Array.isArray(e.images) ? e.images : [] };
-}
+});
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const e = await getEvent((await params).slug);

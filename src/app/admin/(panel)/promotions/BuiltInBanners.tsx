@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { refreshWebsite } from "@/lib/refreshWebsite";
 import { todayMY } from "@/lib/types";
 import type { BuiltInBanner } from "@/lib/defaultAds";
 
@@ -25,7 +26,7 @@ export default function BuiltInBanners({ banners, added, nextOrder }: { banners:
     }));
     const { error } = await createClient().from("promotions").insert(rows);
     setBusy(null);
-    if (error) setError("Could not add: " + error.message); else router.refresh();
+    if (error) setError("Could not add: " + error.message); else (refreshWebsite(), router.refresh());
   }
 
   return (
