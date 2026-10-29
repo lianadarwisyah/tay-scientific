@@ -7,7 +7,7 @@ export const company = {
   tagline: "Laboratory instruments and supplies, quoted for your lab.",
   email: "info@tayscientific.com.my",
   // ---- Where the website's emails go ----
-  careersEmail: "admin@tayscientific.com.my", // job applications (with the CV attached); also saved in Admin → Career jobs
+  careersEmail: "darwisyahliana@gmail.com", // job applications (with the CV attached); also saved in Admin → Career jobs
   serviceEmail: "service@tayscientific.com.my", // service requests, service portal emails (copy) and the customers' reply-to
   calibrationReminderEmail: "service@tayscientific.com.my", // copy of every calibration due reminder
   // Enquiries from the Contact page are emailed to all of these (also saved in Admin → Enquiries)
