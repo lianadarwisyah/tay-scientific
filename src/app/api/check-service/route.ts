@@ -23,7 +23,10 @@ export async function POST(req: Request) {
   if (!EMAIL_RE.test(email)) return NextResponse.json({ ok: false, error: "Please enter a valid email address." }, { status: 400 });
 
   const supabase = createAdminClient();
-  if (!supabase) return NextResponse.json({ ok: false, error: `Check Service is not available right now. Please email ${company.serviceEmail}.` }, { status: 500 });
+  if (!supabase) {
+    console.error("Check Service: SUPABASE_SERVICE_ROLE_KEY is missing in .env.local / Vercel environment variables.");
+    return NextResponse.json({ ok: false, error: `Check Service is not available right now. Please email ${company.serviceEmail}.` }, { status: 500 });
+  }
 
   const last = recent.get(email) ?? 0;
   if (Date.now() - last < 2 * 60_000) return NextResponse.json({ ok: true }); // a link was just sent
