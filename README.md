@@ -161,6 +161,14 @@ Public pages (home, products, brands, services, events, careers) read the databa
 Admin saves (products, banners, events, jobs) clear the cache at once via `/api/revalidate`.
 `vercel.json` runs the server in Mumbai (`bom1`), the same region as the Supabase project (ap-south-1). If Supabase ever moves, change it to match (Singapore = `sin1`).
 
+## 3a-19. Where the website's emails go (`src/lib/company.ts`)
+- Career applications (CV attached): admin@tayscientific.com.my, also in Admin → Career jobs
+- Service requests, service portal copies, calibration reminder copies: service@tayscientific.com.my
+- Contact page enquiries and quote cart quotations: sales2@, yihong.tan@ and jacqie@tayscientific.com.my, also in Admin → Enquiries / Quotations
+- WhatsApp: 018-779 0021
+Environment variables SERVICE_EMAIL, CALIBRATION_REMINDER_EMAIL, ENQUIRY_EMAILS (comma-separated) and QUOTATION_EMAIL
+override these; remove them from .env.local / Vercel if they still point to a test inbox.
+
 ## 3b. Careers page
 Open roles live in `src/lib/jobs.ts`. Edit, add or delete a block to change what shows on `/careers`.
 The descriptions are drafts: replace them with your real job details.

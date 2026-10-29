@@ -18,7 +18,7 @@ function esc(s: string): string {
 }
 
 /**
- * Emails a new quotation request to company.quotationEmail (or QUOTATION_EMAIL in the environment).
+ * Emails a new quotation request to company.quotationEmails (or QUOTATION_EMAIL in the environment).
  * Called by the quote cart right after the quotation is saved. The details are read back from the
  * database (claim_quotation_email), so they cannot be faked, and each quotation is emailed only once.
  */
@@ -45,7 +45,8 @@ export async function POST(req: Request) {
   if (!data) return NextResponse.json({ ok: true, skipped: true }); // already emailed, too old, or unknown
   const q = data as Quote;
 
-  const to = process.env.QUOTATION_EMAIL || company.quotationEmail;
+  // QUOTATION_EMAIL in the environment (comma-separated) overrides the list in company.ts
+  const to = (process.env.QUOTATION_EMAIL || company.quotationEmails.join(",")).split(",").map((s) => s.trim()).filter(Boolean);
   const date = new Date(q.created_at).toLocaleString("en-MY", { timeZone: "Asia/Kuala_Lumpur" });
   const details: [string, string][] = [
     ["Reference", q.ref], ["Date", date], ["Name", q.customer_name], ["Company", q.company || "-"], ["Address", q.address || "-"],

@@ -40,7 +40,7 @@ export default function Header() {
           <div className="flex items-center gap-5">
             <a href={`tel:${company.phone.replace(/[^+\d]/g, "")}`} className="hover:text-ink">{company.phone}</a>
             <a href={`mailto:${company.email}`} className="hidden hover:text-ink sm:inline">{company.email}</a>
-            <a href={whatsappLink("Hi Tay Scientific, I would like to enquire about ")} target="_blank" rel="noopener" className="hover:text-ink">WhatsApp</a>
+            <a href={whatsappLink("Hi Tay Scientific, I would like to enquire about ")} target="_blank" rel="noopener" className="hover:text-ink">WhatsApp <span className="hidden lg:inline">{company.whatsappDisplay}</span></a>
           </div>
           <div className="hidden items-center gap-5 md:flex">
             <a href={company.links.checkService} target="_blank" rel="noopener" className="hover:text-ink">Check Service</a>
@@ -75,8 +75,13 @@ export default function Header() {
               Quote cart
               <span className="rounded-full bg-ink px-2 py-0.5 text-xs text-white" aria-label={`${count} items`}>{count}</span>
             </Link>
-            <button className="btn-line max-[400px]:px-3 md:hidden" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="mobile-nav">
-              {open ? "Close" : "Menu"}
+            <button className="btn-line h-11 w-11 p-0 md:hidden" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="mobile-nav"
+              aria-label={open ? "Close menu" : "Open menu"}>
+              {open ? (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+              ) : (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+              )}
             </button>
           </div>
         </div>

@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { company, whatsappLink } from "@/lib/company";
 import PageHeader from "@/components/PageHeader";
 
@@ -14,11 +13,13 @@ export default function EnquiryPage() {
     // Hidden "website" field: real people leave it empty, simple spam bots fill it in.
     if (f.get("website")) return setState("sent");
     try {
-      const { error } = await createClient().from("enquiries").insert({
-        name: f.get("name"), email: f.get("email"), phone: f.get("phone") || null,
-        subject: f.get("subject") || null, message: f.get("message"),
+      // Saved in Admin → Enquiries and emailed to the sales team (see /api/enquiry)
+      const res = await fetch("/api/enquiry", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(f.entries())),
       });
-      setState(error ? "error" : "sent");
+      const json = await res.json().catch(() => ({}));
+      setState(res.ok && json.ok ? "sent" : "error");
     } catch {
       setState("error");
     }
@@ -60,7 +61,7 @@ export default function EnquiryPage() {
         <p className="mt-1"><a className="text-brand underline" href={`mailto:${company.email}`}>{company.email}</a></p>
         <p className="mt-3 text-slate">{company.address}</p>
         <p className="mt-1 text-slate">{company.hours}</p>
-        <a href={whatsappLink("Hi Tay Scientific, I would like to enquire about ")} target="_blank" rel="noopener" className="btn-wa mt-5 w-full">Contact via WhatsApp</a>
+        <a href={whatsappLink("Hi Tay Scientific, I would like to enquire about ")} target="_blank" rel="noopener" className="btn-wa mt-5 w-full">WhatsApp {company.whatsappDisplay}</a>
       </aside>
     </div>
     </>

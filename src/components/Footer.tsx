@@ -37,7 +37,6 @@ export default function Footer() {
             <li><Link className="hover:text-white" href="/events">Events</Link></li>
             <li><Link className="hover:text-white" href="/careers">Careers</Link></li>
             <li><Link className="hover:text-white" href="/enquiry">Send an enquiry</Link></li>
-            <li><a className="hover:text-white" href={company.mainSite} target="_blank" rel="noopener">Company website</a></li>
           </ul>
         </div>
       </div>

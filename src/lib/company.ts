@@ -6,17 +6,18 @@ export const company = {
   mainSite: "https://www.tayscientific.com.my",
   tagline: "Laboratory instruments and supplies, quoted for your lab.",
   email: "info@tayscientific.com.my",
-  careersEmail: "admin@tayscientific.com.my", // job applications are sent here
-  serviceEmail: "service@tayscientific.com.my", // service requests from the Services page are sent here
-  // Calibration due reminders: a copy goes here. For now a test inbox; change to service@tayscientific.com.my when ready
-  // (or set CALIBRATION_REMINDER_EMAIL in .env.local / Vercel).
-  calibrationReminderEmail: "darwisyahliana@gmail.com",
-  quotationEmail: "darwisyahliana@gmail.com", // new quotation requests are emailed here (TEST: change to the company inbox later)
+  // ---- Where the website's emails go ----
+  careersEmail: "admin@tayscientific.com.my", // job applications (with the CV attached); also saved in Admin → Career jobs
+  serviceEmail: "service@tayscientific.com.my", // service requests, service portal emails (copy) and the customers' reply-to
+  calibrationReminderEmail: "service@tayscientific.com.my", // copy of every calibration due reminder
+  // Enquiries from the Contact page are emailed to all of these (also saved in Admin → Enquiries)
+  enquiryEmails: ["sales2@tayscientific.com.my", "yihong.tan@tayscientific.com.my", "jacqie@tayscientific.com.my"],
+  // Quotation requests from the quote cart are emailed to all of these (also saved in Admin → Quotations)
+  quotationEmails: ["sales2@tayscientific.com.my", "yihong.tan@tayscientific.com.my", "jacqie@tayscientific.com.my"],
   phone: "+607-353 9250",
   phone2: "+607-353 9255",
-  // CHECK: tayscientific.com.my lists three WhatsApp numbers. This uses the one shown under "Shop".
-  // Others: 60187790021 (site menu), 601121737399 (header button).
-  whatsapp: "60122353744", // country code + number, no "+" or spaces
+  whatsapp: "60187790021", // WhatsApp 018-779 0021: country code + number, no "+" or spaces
+  whatsappDisplay: "018-779 0021",
   address: "No. 6, Jalan Mutiara 4, Taman Perindustrian Plentong, 81750 Masai, Johor",
   hours: "Mon – Fri, 8:30 am – 5:30 pm",
   branches: [
