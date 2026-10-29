@@ -36,10 +36,6 @@ export const company = {
       hours: "Mon – Fri, 8:00 am – 5:00 pm",
     },
   ],
-  // Existing staff and customer systems on the main website
-  links: {
-    checkService: "https://www.tayscientific.com.my/service-recorder/login.php",
-  },
   about: [
     "Tay Scientific Instruments Sdn Bhd supplies laboratory instruments, consumables and reagents to research labs, schools, universities and industry across Malaysia.", // CHECK: replace with your own story
     "Instead of an online checkout, we work by quotation. Choose the products you need, send us your list, and our team replies with pricing, availability and delivery details.",

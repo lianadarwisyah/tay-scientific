@@ -43,7 +43,7 @@ export default function Header() {
             <a href={whatsappLink("Hi Tay Scientific, I would like to enquire about ")} target="_blank" rel="noopener" className="hover:text-ink">WhatsApp <span className="hidden lg:inline">{company.whatsappDisplay}</span></a>
           </div>
           <div className="hidden items-center gap-5 md:flex">
-            <a href={company.links.checkService} target="_blank" rel="noopener" className="hover:text-ink">Check Service</a>
+            <Link href="/check-service" className="hover:text-ink">Check Service</Link>
             <Link href="/admin" className="hover:text-ink">Admin</Link>
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function Header() {
                   {n.label}
                 </Link>
               ))}
-              <a href={company.links.checkService} target="_blank" rel="noopener" className="border-b border-line/60 py-3 text-sm text-slate">Check Service</a>
+              <Link href="/check-service" className="border-b border-line/60 py-3 text-sm text-slate">Check Service</Link>
               <Link href="/admin" className="py-3 text-sm text-slate">Admin</Link>
             </div>
           </nav>

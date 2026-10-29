@@ -169,6 +169,12 @@ Admin saves (products, banners, events, jobs) clear the cache at once via `/api/
 Environment variables SERVICE_EMAIL, CALIBRATION_REMINDER_EMAIL, ENQUIRY_EMAILS (comma-separated) and QUOTATION_EMAIL
 override these; remove them from .env.local / Vercel if they still point to a test inbox.
 
+## 3a-20. Check Service (customers)
+`/check-service` (top bar "Check Service"): the customer enters their email; if it is in the records, they get an email
+with a private link (60 minutes) to `/check-service/view`, showing their instruments in service (with progress and
+service reports), calibrations (due dates), service requests and quotation requests. Needs `SUPABASE_SERVICE_ROLE_KEY`
+in `.env.local` and in Vercel (optional: `CHECK_SERVICE_SECRET`, any long random text, to sign the links).
+
 ## 3b. Careers page
 Open roles live in `src/lib/jobs.ts`. Edit, add or delete a block to change what shows on `/careers`.
 The descriptions are drafts: replace them with your real job details.
