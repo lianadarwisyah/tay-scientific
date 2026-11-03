@@ -177,8 +177,8 @@ in `.env.local` and in Vercel (optional: `CHECK_SERVICE_SECRET`, any long random
 
 ## 3a-21. Security headers
 `next.config.mjs` sends security headers on every page: Content-Security-Policy, X-Frame-Options, X-Content-Type-Options,
-Referrer-Policy, Permissions-Policy and Strict-Transport-Security. The CSP only allows scripts, images and data from this
-site, the Supabase project and Wikimedia (one brand logo). If you add an outside service (analytics, chat widget, maps),
+Referrer-Policy, Permissions-Policy and Strict-Transport-Security. The CSP only allows scripts and data from this site and the
+Supabase project; images may load from any https address (category photos, brand logos). If you add an outside service (analytics, chat widget, maps),
 add its address to the CSP or it will be blocked.
 
 ## 3b. Careers page

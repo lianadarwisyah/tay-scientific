@@ -7,7 +7,7 @@ const supabase = (() => {
 const dev = process.env.NODE_ENV !== "production";
 
 /**
- * Content Security Policy: the browser only loads scripts, styles, images and data from these places.
+ * Content Security Policy: the browser only loads scripts, styles and data from these places (images from any https site).
  * 'unsafe-inline' is needed by Next.js and Tailwind; 'unsafe-eval' only while developing (npm run dev).
  * If you add a new outside service (e.g. Google Analytics, a chat widget), add its address here.
  */
@@ -15,7 +15,9 @@ const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: blob: ${supabase} https://upload.wikimedia.org`,
+  // Images may come from any https address (category photos from Unsplash, brand logos, Supabase uploads,
+  // product photos linked from other sites). Images cannot run code, so this stays safe.
+  "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   `connect-src 'self' ${supabase} ${supabase.replace("https://", "wss://")}${dev ? " ws:" : ""}`,
   "media-src 'self' blob:",
