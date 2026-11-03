@@ -2,7 +2,7 @@
 export const company = {
   name: "Tay Scientific Instruments Sdn Bhd",
   shortName: "Tay Scientific",
-  domain: "labstoreonline.com",
+  domain: "tayscientific.com.my",
   mainSite: "https://www.tayscientific.com.my",
   tagline: "Laboratory instruments and supplies, quoted for your lab.",
   email: "info@tayscientific.com.my",

@@ -12,7 +12,7 @@ const display = Barlow_Condensed({ subsets: ["latin"], weight: ["500", "600", "7
 const body = Public_Sans({ subsets: ["latin"], variable: "--font-body" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://labstoreonline.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.tayscientific.com.my"),
   title: { default: `${company.name} | Laboratory Instruments & Supplies`, template: `%s | ${company.shortName}` },
   description: company.tagline,
   openGraph: {

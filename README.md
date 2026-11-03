@@ -175,6 +175,12 @@ with a private link (60 minutes) to `/check-service/view`, showing their instrum
 service reports), calibrations (due dates), service requests and quotation requests. Needs `SUPABASE_SERVICE_ROLE_KEY`
 in `.env.local` and in Vercel (optional: `CHECK_SERVICE_SECRET`, any long random text, to sign the links).
 
+## 3a-21. Security headers
+`next.config.mjs` sends security headers on every page: Content-Security-Policy, X-Frame-Options, X-Content-Type-Options,
+Referrer-Policy, Permissions-Policy and Strict-Transport-Security. The CSP only allows scripts, images and data from this
+site, the Supabase project and Wikimedia (one brand logo). If you add an outside service (analytics, chat widget, maps),
+add its address to the CSP or it will be blocked.
+
 ## 3b. Careers page
 Open roles live in `src/lib/jobs.ts`. Edit, add or delete a block to change what shows on `/careers`.
 The descriptions are drafts: replace them with your real job details.
