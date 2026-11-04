@@ -170,10 +170,11 @@ Environment variables SERVICE_EMAIL, CALIBRATION_REMINDER_EMAIL, ENQUIRY_EMAILS 
 override these; remove them from .env.local / Vercel if they still point to a test inbox.
 
 ## 3a-20. Check Service (customers)
-`/check-service` (top bar "Check Service"): the customer enters their email; if it is in the records, they get an email
-with a private link (60 minutes) to `/check-service/view`, showing their instruments in service (with progress and
-service reports), calibrations (due dates), service requests and quotation requests. Needs `SUPABASE_SERVICE_ROLE_KEY`
-in `.env.local` and in Vercel (optional: `CHECK_SERVICE_SECRET`, any long random text, to sign the links).
+`/check-service` (top bar "Check Service"): the customer enters their email; if it is in the records, a 6-digit code is
+emailed (valid 10 minutes, 5 tries, one use). After typing the code, the same page shows their instruments in service
+(with progress and service reports), calibrations (due dates), service requests and quotation requests, for 30 minutes
+(secure cookie; "Sign out" ends it). Run `supabase/migration_check_service_otp.sql` once. Needs `SUPABASE_SERVICE_ROLE_KEY`
+and the SMTP settings in `.env.local` and in Vercel (optional: `CHECK_SERVICE_SECRET`, any long random text).
 
 ## 3a-21. Security headers
 `next.config.mjs` sends security headers on every page: Content-Security-Policy, X-Frame-Options, X-Content-Type-Options,
