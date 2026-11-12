@@ -182,6 +182,17 @@ Referrer-Policy, Permissions-Policy and Strict-Transport-Security. The CSP only 
 Supabase project; images may load from any https address (category photos, brand logos). If you add an outside service (analytics, chat widget, maps),
 add its address to the CSP or it will be blocked.
 
+## 3a-22. SEO
+- Structured data (schema.org JSON-LD, invisible on the page): Organization with both branches, address, phone and
+  opening hours, and WebSite with catalogue search (every page); Product + BreadcrumbList on product pages; Event +
+  BreadcrumbList on event pages. Helpers in `src/lib/seo.ts`, component `src/components/JsonLd.tsx`.
+- Canonical links on all main pages; category pages are canonical as `/products?category=…`; search results (`?q=`)
+  and the quote cart are `noindex`.
+- Product pages: product photo and description for link previews (WhatsApp, Facebook).
+- `sitemap.xml` lists every active product, brand, category and published event (rebuilt hourly).
+- Canonical links and the sitemap use `NEXT_PUBLIC_SITE_URL`: set it to the final address (the same one chosen as the
+  main domain in Vercel, with or without www) and redeploy.
+
 ## 3b. Careers page
 Open roles live in `src/lib/jobs.ts`. Edit, add or delete a block to change what shows on `/careers`.
 The descriptions are drafts: replace them with your real job details.

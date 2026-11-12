@@ -13,7 +13,29 @@ import type { Product, Brand } from "@/lib/types";
 
 export const revalidate = 60; // cached for speed; Admin saves refresh it straight away
 
-export const metadata: Metadata = { title: "Products" };
+/**
+ * Titles and canonical links: each category (and brand filter) is its own page for Google;
+ * search results (?q=) are not indexed, so Google lists the real product and category pages instead.
+ */
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ q?: string; category?: string; brand?: string; page?: string }> }): Promise<Metadata> {
+  const sp = await searchParams;
+  if (sp.q) return { title: `Search: ${sp.q.slice(0, 60)}`, robots: { index: false, follow: true }, alternates: { canonical: "/products" } };
+  if (sp.category) {
+    const supabase = createClient();
+    const { data } = supabase ? await supabase.from("categories").select("name,description").eq("slug", sp.category).maybeSingle() : { data: null };
+    const name = data?.name ?? "Products";
+    return {
+      title: name,
+      description: data?.description ?? `${name} from leading laboratory brands. Browse and request a quotation from Tay Scientific Instruments, Malaysia.`,
+      alternates: { canonical: `/products?category=${encodeURIComponent(sp.category)}` },
+    };
+  }
+  return {
+    title: "Products",
+    description: "Laboratory instruments, equipment, life science products and consumables from leading brands. Search the catalogue and request a quotation.",
+    alternates: { canonical: "/products" },
+  };
+}
 const PAGE_SIZE = 12;
 
 type SP = { q?: string; category?: string; brand?: string; page?: string };

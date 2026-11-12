@@ -25,7 +25,12 @@ async function getBrand(slug: string) {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const b = await getBrand(slug);
-  return { title: b ? `${b.name} products` : "Brand", description: b ? `${b.name} products supplied by Tay Scientific Instruments.` : undefined };
+  if (!b) return { title: "Brand" };
+  return {
+    title: `${b.name} products`,
+    description: `${b.name} laboratory products supplied by Tay Scientific Instruments in Malaysia. Browse the range and request a quotation.`,
+    alternates: { canonical: `/brands/${slug}` },
+  };
 }
 
 const ExternalIcon = () => (

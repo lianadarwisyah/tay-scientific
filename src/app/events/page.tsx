@@ -7,6 +7,7 @@ import { isUpcoming, type EventItem } from "@/lib/events";
 
 export const metadata: Metadata = {
   title: "Events",
+  alternates: { canonical: "/events" },
   description: "Seminars, product knowledge sessions, exhibitions and collaborations by Tay Scientific Instruments.",
 };
 export const revalidate = 60; // cached; Admin saves refresh it straight away

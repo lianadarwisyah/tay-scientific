@@ -7,6 +7,8 @@ import { ProductImage } from "@/components/ProductCard";
 import AddToCartButton from "@/components/AddToCartButton";
 import { whatsappLink } from "@/lib/company";
 import type { Product } from "@/lib/types";
+import JsonLd from "@/components/JsonLd";
+import { absoluteUrl, breadcrumbSchema, snippet } from "@/lib/seo";
 
 export const revalidate = 60; // cached for speed; Admin saves refresh it straight away
 
@@ -24,18 +26,45 @@ const getProduct = cache(async (slug: string) => {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const p = await getProduct(slug);
-  return { title: p?.name ?? "Product", description: p?.description ?? undefined };
+  if (!p) return { title: "Product" };
+  const description = snippet(p.description) ?? `${p.name}${p.brand ? ` by ${p.brand.name}` : ""}. Request a quotation from Tay Scientific Instruments, Malaysia.`;
+  const image = p.image_url ? absoluteUrl(p.image_url) : undefined;
+  return {
+    title: p.brand && !p.name.toLowerCase().includes(p.brand.name.toLowerCase()) ? `${p.name} – ${p.brand.name}` : p.name,
+    description,
+    alternates: { canonical: `/products/${p.slug}` },
+    openGraph: { type: "website", title: p.name, description, url: `/products/${p.slug}`, ...(image ? { images: [{ url: image, alt: p.name }] } : {}) },
+  };
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const p = await getProduct(slug);
   if (!p) notFound();
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.name,
+    sku: p.sku,
+    mpn: p.sku,
+    url: absoluteUrl(`/products/${p.slug}`),
+    ...(p.description ? { description: snippet(p.description, 500) } : {}),
+    ...(p.image_url ? { image: [absoluteUrl(p.image_url)] } : {}),
+    ...(p.brand ? { brand: { "@type": "Brand", name: p.brand.name } } : {}),
+    ...(p.category ? { category: p.category.name } : {}),
+  };
+  const crumbs = breadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Products", path: "/products" },
+    ...(p.category ? [{ name: p.category.name, path: `/products?category=${p.category.slug}` }] : []),
+    { name: p.name, path: `/products/${p.slug}` },
+  ]);
   const specs: [string, string][] = Array.isArray(p.specs) ? p.specs : Object.entries(p.specs ?? {});
   const features = Array.isArray(p.features) ? p.features : [];
 
   return (
     <div className="container-x py-12">
+      <JsonLd data={[productSchema, crumbs]} />
       <nav className="text-sm text-slate" aria-label="Breadcrumb">
         <Link href="/products" className="hover:text-brand">Products</Link>
         {p.category && <> / <Link href={`/products?category=${p.category.slug}`} className="hover:text-brand">{p.category.name}</Link></>}

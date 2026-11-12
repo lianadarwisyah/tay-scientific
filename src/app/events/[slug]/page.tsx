@@ -6,6 +6,8 @@ import { createPublicClient as createClient } from "@/lib/supabase/public";
 import EventGallery from "@/components/EventGallery";
 import { formatEventDate, isUpcoming, type EventItem } from "@/lib/events";
 import { company } from "@/lib/company";
+import JsonLd from "@/components/JsonLd";
+import { SITE_URL, absoluteUrl, breadcrumbSchema } from "@/lib/seo";
 
 export const revalidate = 60; // cached; Admin saves refresh it straight away
 
@@ -21,7 +23,12 @@ const getEvent = cache(async (slug: string) => {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const e = await getEvent((await params).slug);
   if (!e) return { title: "Event" };
-  return { title: e.title, description: e.summary ?? undefined, openGraph: e.images[0] ? { images: [e.images[0]] } : undefined };
+  return {
+    title: e.title,
+    description: e.summary ?? undefined,
+    alternates: { canonical: `/events/${e.slug}` },
+    openGraph: e.images[0] ? { images: [e.images[0]] } : undefined,
+  };
 }
 
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -29,6 +36,20 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   if (!e) notFound();
   const upcoming = isUpcoming(e);
   const cover = e.images[0];
+  const eventSchema = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: e.title,
+    startDate: e.event_date,
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    url: absoluteUrl(`/events/${e.slug}`),
+    ...(e.summary ? { description: e.summary } : {}),
+    ...(e.images.length ? { image: e.images.map((src) => absoluteUrl(src)) } : {}),
+    ...(e.location ? { location: { "@type": "Place", name: e.location.split(",")[0], address: e.location } } : {}),
+    organizer: { "@type": "Organization", name: company.name, url: SITE_URL },
+  };
+  const crumbs = breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Events", path: "/events" }, { name: e.title, path: `/events/${e.slug}` }]);
   const facts: [string, string | null][] = [
     ["Date", formatEventDate(e.event_date, true)], ["Time", e.time_text], ["Location", e.location],
     ["In collaboration with", e.partners ? `${company.name} and ${e.partners}` : null],
@@ -36,6 +57,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
   return (
     <>
+      <JsonLd data={[eventSchema, crumbs]} />
       <section className="border-b border-line bg-white">
         <div className="container-x py-10 md:py-14">
           <nav aria-label="Breadcrumb" className="text-sm text-slate">

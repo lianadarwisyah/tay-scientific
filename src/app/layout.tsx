@@ -1,3 +1,5 @@
+import JsonLd from "@/components/JsonLd";
+import { organizationSchema, websiteSchema } from "@/lib/seo";
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Public_Sans } from "next/font/google";
 import "./globals.css";
@@ -21,6 +23,7 @@ export const metadata: Metadata = {
     locale: "en_MY",
     images: [{ url: "/tay-scientific-building.jpg", width: 563, height: 374 }],
   },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = { themeColor: "#0848A0" };
@@ -29,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
+        <JsonLd data={[organizationSchema(), websiteSchema()]} />
         <a href="#main" className="no-print sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:font-semibold focus:text-ink">
           Skip to content
         </a>

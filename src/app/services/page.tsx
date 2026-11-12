@@ -5,7 +5,11 @@ import ServiceRequestForm from "@/components/ServiceRequestForm";
 
 export const revalidate = 60; // cached for speed; Admin saves refresh it straight away
 
-export const metadata: Metadata = { title: "Services" };
+export const metadata: Metadata = {
+  title: "Services",
+  description: "Calibration, inspection, repair, preventive maintenance, installation and training for laboratory instruments in Malaysia. Request a service online.",
+  alternates: { canonical: "/services" },
+};
 
 export default async function ServicesPage() {
   const supabase = createClient();

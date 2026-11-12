@@ -9,6 +9,7 @@ export const revalidate = 60; // cached for speed; Admin saves refresh it straig
 
 export const metadata: Metadata = {
   title: "Brands",
+  alternates: { canonical: "/brands" },
   description: "Laboratory chemicals, equipment, life science products and consumables from the brands Tay Scientific supplies.",
 };
 

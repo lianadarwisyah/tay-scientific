@@ -8,6 +8,9 @@ import PartnersMarquee, { type PartnerBrand } from "@/components/PartnersMarquee
 import HeroBanner from "@/components/HeroBanner";
 import { defaultAds } from "@/lib/defaultAds";
 import { todayMY, type Product, type Service, type Promotion } from "@/lib/types";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export const revalidate = 60; // cached for speed; Admin saves refresh it straight away
 

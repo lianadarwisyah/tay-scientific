@@ -6,6 +6,7 @@ import { getOpenJobs } from "@/lib/getJobs";
 
 export const metadata: Metadata = {
   title: "Careers",
+  alternates: { canonical: "/careers" },
   description: "Join Tay Scientific Instruments. See our open roles in sales, accounts, operations, store, service and customer service in Johor Bahru.",
 };
 
