@@ -34,7 +34,7 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },             // browsers must respect file types
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" },
-  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }, // always https
+  { key: "Strict-Transport-Security", value: "max-age=31536000" }, // always https,
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
 ];
 

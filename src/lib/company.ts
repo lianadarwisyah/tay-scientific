@@ -7,13 +7,13 @@ export const company = {
   tagline: "Laboratory instruments and supplies, quoted for your lab.",
   email: "info@tayscientific.com.my",
   // ---- Where the website's emails go ----
-  careersEmail: "admin@tayscientific.com.my", // job applications (with the CV attached); also saved in Admin → Career jobs
-  serviceEmail: "service@tayscientific.com.my", // service requests, service portal emails (copy) and the customers' reply-to
-  calibrationReminderEmail: "service@tayscientific.com.my", // copy of every calibration due reminder
+  careersEmail: "darwisyahliana@gmail.com",//"admin@tayscientific.com.my", // job applications (with the CV attached); also saved in Admin → Career jobs
+  serviceEmail: "darwisyahliana@gmail.com",//"service@tayscientific.com.my", // service requests, service portal emails (copy) and the customers' reply-to
+  calibrationReminderEmail: "darwisyahliana@gmail.com",//"service@tayscientific.com.my", // copy of every calibration due reminder
   // Enquiries from the Contact page are emailed to all of these (also saved in Admin → Enquiries)
-  enquiryEmails: ["sales2@tayscientific.com.my", "yihong.tan@tayscientific.com.my", "jacqie@tayscientific.com.my"],
+  enquiryEmails:"darwisyahliana@gmail.com",// ["sales2@tayscientific.com.my", "yihong.tan@tayscientific.com.my", "jacqie@tayscientific.com.my"],
   // Quotation requests from the quote cart are emailed to all of these (also saved in Admin → Quotations)
-  quotationEmails: ["sales2@tayscientific.com.my", "yihong.tan@tayscientific.com.my", "jacqie@tayscientific.com.my"],
+  quotationEmails: "darwisyahliana@gmail.com",//["sales2@tayscientific.com.my", "yihong.tan@tayscientific.com.my", "jacqie@tayscientific.com.my"],
   phone: "+607-353 9250",
   phone2: "+607-353 9255",
   whatsapp: "60187790021", // WhatsApp 018-779 0021: country code + number, no "+" or spaces
