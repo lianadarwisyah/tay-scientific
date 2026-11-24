@@ -11,9 +11,9 @@ export const company = {
   serviceEmail: "darwisyahliana@gmail.com",//"service@tayscientific.com.my", // service requests, service portal emails (copy) and the customers' reply-to
   calibrationReminderEmail: "darwisyahliana@gmail.com",//"service@tayscientific.com.my", // copy of every calibration due reminder
   // Enquiries from the Contact page are emailed to all of these (also saved in Admin → Enquiries)
-  enquiryEmails:"darwisyahliana@gmail.com",// ["sales2@tayscientific.com.my", "yihong.tan@tayscientific.com.my", "jacqie@tayscientific.com.my"],
+  enquiryEmails:["sales2@tayscientific.com.my", "yihong.tan@tayscientific.com.my", "jacqie@tayscientific.com.my"],
   // Quotation requests from the quote cart are emailed to all of these (also saved in Admin → Quotations)
-  quotationEmails: "darwisyahliana@gmail.com",//["sales2@tayscientific.com.my", "yihong.tan@tayscientific.com.my", "jacqie@tayscientific.com.my"],
+  quotationEmails: ["sales2@tayscientific.com.my", "yihong.tan@tayscientific.com.my", "jacqie@tayscientific.com.my"],
   phone: "+607-353 9250",
   phone2: "+607-353 9255",
   whatsapp: "60187790021", // WhatsApp 018-779 0021: country code + number, no "+" or spaces
