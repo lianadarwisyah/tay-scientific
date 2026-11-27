@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { createMailer } from "@/lib/mailer";
 import { company } from "@/lib/company";
+import { sendApplicationReceived } from "@/lib/customerEmails";
 import { getOpenJobs } from "@/lib/getJobs";
 import { createClient } from "@/lib/supabase/server";
 import { todayMY } from "@/lib/types";
@@ -87,7 +88,10 @@ export async function POST(req: Request) {
   // 2) Email it with the CV attached
   const sent = await sendEmail();
   if (sent && appId && supabase) await supabase.rpc("mark_job_application_emailed", { app_id: appId });
-  if (appId || sent) return NextResponse.json({ ok: true });
+  if (appId || sent) {
+    await sendApplicationReceived({ name, email, position }, company.careersEmail); // confirmation to the applicant
+    return NextResponse.json({ ok: true });
+  }
   return fail("Your application could not be sent. Please try again, or email your CV to " + company.careersEmail + ".", 502);
 
   async function sendEmail(): Promise<boolean> {
@@ -97,7 +101,7 @@ export async function POST(req: Request) {
       return false;
     }
     const port = Number(SMTP_PORT || 465);
-    const transporter = nodemailer.createTransport({
+    const transporter = createMailer({
       host: SMTP_HOST,
       port,
       secure: port === 465, // 465 = SSL, 587 = STARTTLS

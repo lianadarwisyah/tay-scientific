@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { createMailer } from "@/lib/mailer";
 import { company } from "@/lib/company";
+import { sendServiceRequestReceived } from "@/lib/customerEmails";
 import { serviceTypes } from "@/lib/serviceTypes";
 import { createClient } from "@/lib/supabase/server";
 
@@ -75,6 +76,11 @@ export async function POST(req: Request) {
   const sent = await sendEmail();
   if (sent && ref && supabase) await supabase.rpc("mark_service_request_emailed", { r_ref: ref });
 
+  if (ref || sent) {
+    await sendServiceRequestReceived({
+      ref, pic, email, service: type === "Others" ? `Others: ${typeOther}` : type, description, brand, model, serial,
+    }, to); // confirmation to the customer
+  }
   if (ref) return NextResponse.json({ ok: true, ref }); // saved: staff will see it in Admin even if the email failed
   if (sent) return NextResponse.json({ ok: true, ref: null });
   return fail(`Your request could not be sent. Please try again, or email ${to} or call ${company.phone}.`, 502);
@@ -86,7 +92,7 @@ export async function POST(req: Request) {
       return false;
     }
     const port = Number(SMTP_PORT || 465);
-    const transporter = nodemailer.createTransport({
+    const transporter = createMailer({
       host: SMTP_HOST, port, secure: port === 465,
       auth: { user: SMTP_USER, pass: SMTP_HOST === "smtp.gmail.com" ? SMTP_PASS.replace(/\s/g, "") : SMTP_PASS },
     });

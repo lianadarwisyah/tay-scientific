@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import { createMailer } from "@/lib/mailer";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -35,7 +35,7 @@ export async function sendCalibrationReminders(supabase: SupabaseClient): Promis
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM } = process.env;
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) { result.errors.push("Email is not set up (SMTP settings missing)."); return result; }
   const port = Number(SMTP_PORT || 465);
-  const transporter = nodemailer.createTransport({
+  const transporter = createMailer({
     host: SMTP_HOST, port, secure: port === 465,
     auth: { user: SMTP_USER, pass: SMTP_HOST === "smtp.gmail.com" ? SMTP_PASS.replace(/\s/g, "") : SMTP_PASS },
   });

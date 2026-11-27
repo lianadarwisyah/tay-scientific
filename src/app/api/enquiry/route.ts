@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { createMailer } from "@/lib/mailer";
 import { createClient } from "@supabase/supabase-js";
 import { company } from "@/lib/company";
+import { sendEnquiryReceived } from "@/lib/customerEmails";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
   const to = (process.env.ENQUIRY_EMAILS || company.enquiryEmails.join(",")).split(",").map((s) => s.trim()).filter(Boolean);
   if (SMTP_HOST && SMTP_USER && SMTP_PASS && to.length) {
     const port = Number(SMTP_PORT || 465);
-    const transporter = nodemailer.createTransport({
+    const transporter = createMailer({
       host: SMTP_HOST, port, secure: port === 465,
       auth: { user: SMTP_USER, pass: SMTP_HOST === "smtp.gmail.com" ? SMTP_PASS.replace(/\s/g, "") : SMTP_PASS },
     });
@@ -62,6 +63,9 @@ export async function POST(req: Request) {
     console.error("Enquiry: SMTP settings missing, email not sent.");
   }
 
-  if (saved || sent) return NextResponse.json({ ok: true });
+  if (saved || sent) {
+    await sendEnquiryReceived({ name, email, subject, message }, to); // confirmation to the customer
+    return NextResponse.json({ ok: true });
+  }
   return fail(`Your enquiry could not be sent. Please email ${company.email} or call ${company.phone}.`, 502);
 }

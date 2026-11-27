@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { createMailer } from "@/lib/mailer";
 import { createClient } from "@supabase/supabase-js";
 import { company } from "@/lib/company";
+import { sendQuotationReceived } from "@/lib/customerEmails";
 
 // Nodemailer needs the Node.js runtime (not Edge).
 export const runtime = "nodejs";
@@ -79,7 +80,7 @@ export async function POST(req: Request) {
   ].join("\n");
 
   const port = Number(SMTP_PORT || 465);
-  const transporter = nodemailer.createTransport({
+  const transporter = createMailer({
     host: SMTP_HOST, port, secure: port === 465, auth: { user: SMTP_USER, pass: SMTP_HOST === "smtp.gmail.com" ? SMTP_PASS.replace(/\s/g, "") : SMTP_PASS },
   });
 
@@ -94,7 +95,9 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("Quotation email: sending failed", err);
+    await sendQuotationReceived(q, to); // the customer still gets their confirmation
     return NextResponse.json({ ok: false }, { status: 502 });
   }
+  await sendQuotationReceived(q, to); // "We've received your quotation request" to the customer
   return NextResponse.json({ ok: true });
 }

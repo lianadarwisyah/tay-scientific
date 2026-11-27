@@ -7,7 +7,6 @@ import downloaded from "./brandLogos.generated.json";
  */
 const REMOTE: Record<string, string> = {
   "sigma-aldrich": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Sigma-Aldrich_logo.jpg",
-  bwb: "https://static.wixstatic.com/media/dcbfd9_ae7fce1e6d5943c4a16e36f39cdc3d5a~mv2.jpg",
 };
 
 /** The brand's logo if it really has one (no guessing), otherwise null. Used by the partners strip. */

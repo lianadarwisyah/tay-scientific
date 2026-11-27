@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { createMailer } from "@/lib/mailer";
 import { company } from "@/lib/company";
 import { createClient } from "@/lib/supabase/server";
 import { longDate, normaliseJob, REPORT_LETTERHEAD } from "@/lib/serviceJobs";
@@ -94,7 +94,7 @@ export async function POST(req: Request) {
     "", `Questions? Reply to this email or call ${REPORT_LETTERHEAD.hq.tel}.`, "", "Service Department", company.name].join("\n");
 
   const port = Number(SMTP_PORT || 465);
-  const transporter = nodemailer.createTransport({
+  const transporter = createMailer({
     host: SMTP_HOST, port, secure: port === 465,
     auth: { user: SMTP_USER, pass: SMTP_HOST === "smtp.gmail.com" ? SMTP_PASS.replace(/\s/g, "") : SMTP_PASS },
   });

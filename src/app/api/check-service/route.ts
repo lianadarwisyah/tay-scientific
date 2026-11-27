@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
-import nodemailer from "nodemailer";
+import { createMailer } from "@/lib/mailer";
 import { company } from "@/lib/company";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CODE_MINUTES, emailPattern, hasSecret, hashCode, newCode, normaliseEmail } from "@/lib/checkService";
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
   if (insErr) { console.error("Check Service: could not save code", insErr.message); return fail("Something went wrong. Please try again.", 500); }
 
   const port = Number(SMTP_PORT || 465);
-  const transporter = nodemailer.createTransport({
+  const transporter = createMailer({
     host: SMTP_HOST, port, secure: port === 465,
     auth: { user: SMTP_USER, pass: SMTP_HOST === "smtp.gmail.com" ? SMTP_PASS.replace(/\s/g, "") : SMTP_PASS },
   });
